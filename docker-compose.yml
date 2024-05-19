@@ -4,7 +4,6 @@ services:
   rate:
     container_name: rate
     env_file:
-      - configs/postgresql.build.conf
       - configs/.env
     build:
       context: .
