@@ -1,0 +1,64 @@
+version: '3.8'
+
+services:
+  rate:
+    container_name: rate
+    env_file:
+      - configs/postgresql.build.conf
+      - configs/.env
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - 8081:8081
+    working_dir: /usr/src/app
+    depends_on:
+      - db
+    restart: unless-stopped
+    networks:
+      - rate-network
+
+  db:
+    image: postgres:16.3
+    container_name: postgres_db
+    restart: always
+    environment:
+      POSTGRES_DB: mydatabase
+      POSTGRES_USER: myuser
+      POSTGRES_PASSWORD: mypassword
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - rate-network
+
+  migrate:
+    image: migrate/migrate
+    volumes:
+      - ./migrations:/db
+    command:
+      - "-path"
+      - "db"
+      - "-database"
+      - "postgresql://myuser:mypassword@db:5432/mydatabase?sslmode=disable"
+      - "up"
+    restart: on-failure
+    depends_on:
+      - db
+    networks:
+      - rate-network
+  mailhog:
+    image: mailhog/mailhog:latest
+    ports:
+      - "1025:1025"
+      - "8025:8025"
+    networks:
+      - rate-network
+
+networks:
+  rate-network:
+    driver: bridge
+
+volumes:
+  postgres_data:
