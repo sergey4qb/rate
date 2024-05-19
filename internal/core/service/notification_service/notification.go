@@ -77,55 +77,6 @@ func (s *Service) SendRates(ctx context.Context) error {
 	return nil
 }
 
-// func (s *Service) send(ctx context.Context, message string, subscriber subscriber.Subscriber) error {
-// 	to := []string{subscriber.Email}
-//
-// 	m := []byte(s.Subject + "\n" + message)
-//
-// 	auth := smtp.PlainAuth("", s.Username, s.Password, s.SMTPHost)
-//
-// 	conn, err := smtp.Dial(s.SMTPHost + ":" + s.SMTPPort)
-// 	if err != nil {
-// 		return errSentNotification(err)
-// 	}
-// 	defer conn.Close()
-//
-// 	if err := conn.StartTLS(nil); err != nil {
-// 		return errSentNotification(err)
-// 	}
-//
-// 	if err := conn.Auth(auth); err != nil {
-// 		return errSentNotification(err)
-// 	}
-//
-// 	if err := conn.Mail(s.From); err != nil {
-// 		return errSentNotification(err)
-// 	}
-//
-// 	for _, addr := range to {
-// 		if err := conn.Rcpt(addr); err != nil {
-// 			return errSentNotification(err)
-// 		}
-// 	}
-//
-// 	w, err := conn.Data()
-// 	if err != nil {
-// 		return errSentNotification(err)
-// 	}
-//
-// 	_, err = w.Write(m)
-// 	if err != nil {
-// 		return errSentNotification(err)
-// 	}
-//
-// 	err = w.Close()
-// 	if err != nil {
-// 		return errSentNotification(err)
-// 	}
-//
-// 	return nil
-// }
-
 func (s *Service) send(ctx context.Context, message string, subscriber subscriber.Subscriber) error {
 	to := []string{subscriber.Email}
 	m := []byte(s.Subject + "\n" + message)
